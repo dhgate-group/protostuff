@@ -44,9 +44,9 @@
     This is because it's impossible to upgrade all jar packages across the company simultaneously. If necessary, we can continue modifying our current solution to include this feature.
 
 **8,contact us**
-
-    email：wangliguang@dhgate.com
-    WeChat：wangliguang517
+    
+    my WeChat：wangliguang517
+    my email：wangliguang@dhgate.com
     company：jiagou.list <jiagou.list@dhgate.com>
 
 
@@ -97,6 +97,6 @@
     
 **8,联系我们**
 
-    我公司邮箱：wangliguang@dhgate.com
     我微信：wangliguang517
+    我公司邮箱：wangliguang@dhgate.com
     公司群组邮箱：jiagou.list <jiagou.list@dhgate.com>
