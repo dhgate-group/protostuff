@@ -5,7 +5,7 @@
 ###Problem Encountered or Solved
 
 
-**1，Serialization and Large Object Support**
+**1，require fast serialization that is also friendly to large objects**
 
     After multiple comparisons, it was determined that protostuff provided stable performance and was friendly to large objects, with relatively consistent speeds. 
     Alternative options such as JSON and JSON2 were considered, however, due to non-standardized coding practices in our longstanding Internet company history, 
@@ -52,7 +52,7 @@
 
 ###遇到或解决的问题
 
-**1，需要告诉的序列化，且对大对象很友好**
+**1，需要高速的序列化，且对大对象很友好**
 
     经过多次比对发现protostuff性能稳定，且对大对象很友好，速度相对稳定。
     中间也考虑过用json，或者json2，但是作为一家老牌互联网公司历史上会有一些，不是很规范的写法，导致json无法使用，
