@@ -1,5 +1,55 @@
 ![Protostuff](https://protostuff.github.io/images/protostuff_300x100.png)
 
+
+
+###Problem Encountered or Solved
+
+
+**1，Serialization and Large Object Support**
+
+    After multiple comparisons, it was determined that protostuff provided stable performance and was friendly to large objects, with relatively consistent speeds. 
+    Alternative options such as JSON and JSON2 were considered, however, due to non-standardized coding practices in our longstanding Internet company history, 
+    JSON could not be used for things like unclear generics, including List<Object> or List<Map>. Consequently, protostuff was ultimately selected.
+
+**2，Compatibility**
+
+    Given the selection of protostuff, compatibility problems emerged:
+    
+    (a) Without tags, developers may add new attributes to classes in the wrong location.
+    (b) Adding tags also poses issues. For instance, we are a longstanding Internet company that has already adopted microservices. 
+    There are many projects with complex dependency relationships. Suppose Developer A adds an attribute to a DTO field but forgets to add the tag before building. 
+    At the same time, Developer B is building and publishing changes to their project, which may only be small, such as a single logging message. 
+    It's unreasonable to ask them to run all functional and unit tests again. However, due to A's (illegal) modifications, B's project experiences errors when published.
+**3，Reduce Workload**
+
+    Adding tags is a mechanical process that creates an unpleasant user experience.
+
+
+**4,Solution**
+
+    On top of the existing protostuff codebase, small tweaks were made so that if a tag is present, it takes its corresponding value, and if not, it calculates one instead.
+
+**5,JUnit Test Class**
+
+    NoAnnotatedFieldsTest
+
+**6,Regrets**
+
+    Because an automatically calculated value replaces tags, there is a chance of hash collisions. If this occurs, another tag can be added to the collision property.
+    PS: However, after comparing multiple solutions in terms of performance and usability, the current solution remains the best choice.
+
+**7,Conclusion**
+
+    Two modes are available in the version used internally by our company. One is as described above, and the other remains compatible with older versions. 
+    This is because it's impossible to upgrade all jar packages across the company simultaneously. If necessary, we can continue modifying our current solution to include this feature.
+
+
+
+
+
+
+
+
 ###遇到或解决的问题
 
 **1，需要告诉的序列化，且对大对象很友好**
