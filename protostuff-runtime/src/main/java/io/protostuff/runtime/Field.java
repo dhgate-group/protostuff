@@ -22,13 +22,17 @@ public abstract class Field<T>
     // public final Tag tag;
 
     public Field(WireFormat.FieldType type, int number, String name, boolean repeated,
-            Tag tag)
+                 Tag tag)
     {
         this.type = type;
-        this.number = number;
         this.name = name;
         this.repeated = repeated;
         this.groupFilter = tag == null ? 0 : tag.groupFilter();
+        if(tag==null){
+            this.number = StringUtil.stringToInt(name);
+        }else {
+            this.number = number;
+        }
         // this.tag = tag;
     }
 
@@ -36,7 +40,7 @@ public abstract class Field<T>
     {
         this(type, number, name, false, tag);
     }
-    
+
     /**
      * No copy by default.
      */
@@ -61,5 +65,5 @@ public abstract class Field<T>
      * Transfer the input field to the output field.
      */
     protected abstract void transfer(Pipe pipe, Input input, Output output,
-            boolean repeated) throws IOException;
+                                     boolean repeated) throws IOException;
 }

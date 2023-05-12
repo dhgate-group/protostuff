@@ -1,124 +1,37 @@
-
 ![Protostuff](https://protostuff.github.io/images/protostuff_300x100.png)
 
-A java serialization library with built-in support for forward-backward compatibility (schema evolution) and validation.
+###遇到或解决的问题
 
-- **efficient**, both in speed and memory
-- **flexible**, supporting pluggable formats
+**1，需要告诉的序列化，且对大对象很友好**
 
-### Usecase
-- messaging layer in RPC
-- storage format in the datastore or cache
+    经过多次比对发现protostuff性能稳定，且对大对象很友好，速度相对稳定。
+    中间也考虑过用json，或者json2，但是作为一家老牌互联网公司历史上会有一些，不是很规范的写法，导致json无法使用，
+    比如泛型不明确：List<Object> ,List<Map>
+    最终选择了protostuff
+**2，兼容性**
 
-For more information, go to https://protostuff.github.io/docs/
+    选择protostuff后面临兼容性的问题
+    a，不加tag的话，可能会有开发的同学将新增的属性发到类的上面，或者中间
+    b，加tag，也会面临其他的问题
+    比如我们敦煌作为大型互联网公司，且已经微服务化。会有很多个工程，同时依赖关系也相对复杂。
+    A工程的开发同学对dto字段加了属性但是忘记加tag。然后进行构建。
+    B工程现在正好构建，发版。但是B工程只改了一小点内容，甚至是一条日志打印，不可能要求他把所有的功能测试，或者单元测试都跑一遍。
+    但是由于A的(非法)修改导致B工程上线报错。
+**3，减少工作量**
 
-## Maven
+    加tag作为一个机械性动作，带来的使用感觉不是很好
 
-1. For the core formats (protostuff, protobuf, graph)
-   
-  ```xml
-  <dependency>
-    <groupId>io.protostuff</groupId>
-    <artifactId>protostuff-core</artifactId>
-    <version>1.7.4</version>
-  </dependency>
-  ```
 
-2. For schemas generated at runtime
-   
-  ```xml
-  <dependency>
-    <groupId>io.protostuff</groupId>
-    <artifactId>protostuff-runtime</artifactId>
-    <version>1.7.4</version>
-  </dependency>
-  ```
+**4,解决思路**
 
-## Usage
-```java
-public final class Foo
-{
-    String name;
-    int id;
-    
-    public Foo(String name, int id)
-    {
-        this.name = name;
-        this.id = id;
-    }
-}
+    在原有的protostuff基础上做了小的调整，有tag取tag值，没有tag计算一个值
 
-static void roundTrip()
-{
-    Foo foo = new Foo("foo", 1);
+**5,junit测试类**
 
-    // this is lazily created and cached by RuntimeSchema
-    // so its safe to call RuntimeSchema.getSchema(Foo.class) over and over
-    // The getSchema method is also thread-safe
-    Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
+    NoAnnotatedFieldsTest
 
-    // Re-use (manage) this buffer to avoid allocating on every serialization
-    LinkedBuffer buffer = LinkedBuffer.allocate(512);
+**6,写到最后**
 
-    // ser
-    final byte[] protostuff;
-    try
-    {
-        protostuff = ProtostuffIOUtil.toByteArray(foo, schema, buffer);
-    }
-    finally
-    {
-        buffer.clear();
-    }
-
-    // deser
-    Foo fooParsed = schema.newMessage();
-    ProtostuffIOUtil.mergeFrom(protostuff, fooParsed, schema);
-}
-```
-
-## Important (for version 1.8.x)
-If you are to purely use this to replace java serialization (no compatibility with protobuf), set the following system properties:
-```
--Dprotostuff.runtime.always_use_sun_reflection_factory=true
--Dprotostuff.runtime.preserve_null_elements=true
--Dprotostuff.runtime.morph_collection_interfaces=true
--Dprotostuff.runtime.morph_map_interfaces=true
--Dprotostuff.runtime.morph_non_final_pojos=true
-```
-
-You can also customize it programmatically:
-```java
-static final DefaultIdStrategy STRATEGY = new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS 
-        | IdStrategy.PRESERVE_NULL_ELEMENTS
-        | IdStrategy.MORPH_COLLECTION_INTERFACES
-        | IdStrategy.MORPH_MAP_INTERFACES
-        | IdStrategy.MORPH_NON_FINAL_POJOS);
-```
-
-Use it:
-```java
-Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class, STRATEGY);
-```
-
-Questions/Concerns/Suggestions
-------------------------------
-
-- subscribe to http://groups.google.com/group/protostuff/
-
-Requirements
-------------
-
-Java 1.6 or higher
-
-Build Requirements
-------------------
-
-Maven 3.2.3 or higher
-
-Developing with eclipse
-------------------
-```sh
-mvn install && mvn eclipse:eclipse
-# Open eclipse, import existing project, navigate to the protostuff module you're after, then hit 'Finish'.
-```
+    我们公司内部使用的版本，有2个模式一个是上面介绍的。
+    另外一个模式是兼容以前老的版本，因为无法做到全公司同一时间升级jar包。
+    如果大家需要，我可以在当前基础上继续修改，将这个功能也囊括进来
