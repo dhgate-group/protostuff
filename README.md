@@ -45,7 +45,7 @@
 
 **8,contact us**
 
-    email：wangliguang@163.com
+    email：wangliguang@dhgate.com
     WeChat：wangliguang517
     company：jiagou.list <jiagou.list@dhgate.com>
 
@@ -97,6 +97,6 @@
     
 **8,联系我们**
 
-    我公司邮箱：wangliguang@163.com
+    我公司邮箱：wangliguang@dhgate.com
     我微信：wangliguang517
     公司群组邮箱：jiagou.list <jiagou.list@dhgate.com>
